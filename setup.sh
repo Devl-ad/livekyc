@@ -8,7 +8,7 @@ echo "📦 Installing dependencies..."
 pip install -r requirements.txt --break-system-packages -q
 
 echo "🗄️  Running migrations..."
-python manage.py makemigrations accounts letters payments
+python manage.py makemigrations kyc 
 python manage.py migrate
 
 echo "👤 Creating superuser (admin)..."
