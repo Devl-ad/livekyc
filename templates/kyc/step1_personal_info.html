@@ -1,0 +1,114 @@
+{% extends "kyc/base.html" %}
+{% block title %}KYC — Personal Information{% endblock %}
+
+{% block content %}
+<div class="hero">
+  <div class="hero-tag">Identity Verification</div>
+  <h1 class="hero-title">Verify your <em>identity</em><br>securely.</h1>
+  <p class="hero-sub">Complete KYC in minutes. Your documents are encrypted and processed in compliance with global privacy standards.</p>
+</div>
+
+{% include "kyc/_steps_bar.html" with current_step=1 %}
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title-group">
+      <span class="card-step-tag">Step 01 of 03</span>
+      <h2 class="card-title">Personal Information</h2>
+    </div>
+    <div class="card-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#2e7fff" stroke-width="1.5">
+        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="info-note">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <p>Enter your name <strong>exactly as it appears</strong> on your government-issued ID document. Mismatches will cause verification to fail.</p>
+    </div>
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      <div class="field-row two-col">
+        <div class="field">
+          <label for="{{ form.first_name.id_for_label }}">First Name</label>
+          <input type="text"
+                 name="{{ form.first_name.html_name }}"
+                 id="{{ form.first_name.id_for_label }}"
+                 value="{{ form.first_name.value|default:'' }}"
+                 placeholder="As on ID"
+                 {% if form.first_name.errors %}class="is-invalid"{% endif %}>
+          {% for err in form.first_name.errors %}
+            <span class="field-error">{{ err }}</span>
+          {% endfor %}
+        </div>
+        <div class="field">
+          <label for="{{ form.last_name.id_for_label }}">Last Name</label>
+          <input type="text"
+                 name="{{ form.last_name.html_name }}"
+                 id="{{ form.last_name.id_for_label }}"
+                 value="{{ form.last_name.value|default:'' }}"
+                 placeholder="As on ID"
+                 {% if form.last_name.errors %}class="is-invalid"{% endif %}>
+          {% for err in form.last_name.errors %}
+            <span class="field-error">{{ err }}</span>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="field-row two-col">
+        <div class="field">
+          <label for="{{ form.date_of_birth.id_for_label }}">Date of Birth</label>
+          <input type="date"
+                 name="{{ form.date_of_birth.html_name }}"
+                 id="{{ form.date_of_birth.id_for_label }}"
+                 value="{{ form.date_of_birth.value|default:'' }}"
+                 {% if form.date_of_birth.errors %}class="is-invalid"{% endif %}>
+          {% for err in form.date_of_birth.errors %}
+            <span class="field-error">{{ err }}</span>
+          {% endfor %}
+        </div>
+        <div class="field">
+          <label for="{{ form.nationality.id_for_label }}">Nationality</label>
+          <select name="{{ form.nationality.html_name }}" id="{{ form.nationality.id_for_label }}"
+                  {% if form.nationality.errors %}class="is-invalid"{% endif %}>
+            {% for val, label in form.fields.nationality.widget.choices %}
+              <option value="{{ val }}" {% if form.nationality.value == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+          {% for err in form.nationality.errors %}
+            <span class="field-error">{{ err }}</span>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="{{ form.email.id_for_label }}">Email Address</label>
+          <input type="email"
+                 name="{{ form.email.html_name }}"
+                 id="{{ form.email.id_for_label }}"
+                 value="{{ form.email.value|default:'' }}"
+                 placeholder="you@example.com"
+                 {% if form.email.errors %}class="is-invalid"{% endif %}>
+          {% for err in form.email.errors %}
+            <span class="field-error">{{ err }}</span>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="btn-row">
+        <button type="submit" class="btn btn-primary">
+          Continue
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

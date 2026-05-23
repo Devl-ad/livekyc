@@ -1,0 +1,200 @@
+{% extends "kyc/base.html" %}
+{% block title %}KYC — Liveness Check{% endblock %}
+
+{% block extra_css %}
+<style>
+.liveness-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+.liveness-step{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px 14px;text-align:center;transition:all .3s}
+.liveness-step.done{border-color:#00d08444;background:#00d08408}
+.liveness-step.active{border-color:#2e7fff66;background:var(--accent-glow)}
+.liveness-step-icon{font-size:24px;margin-bottom:8px;display:block}
+.liveness-step-text{font-size:11px;color:var(--text-muted);line-height:1.4}
+.video-container{position:relative;background:#000;border-radius:16px;overflow:hidden;aspect-ratio:4/3;margin-bottom:24px;border:1px solid var(--border)}
+#videoEl{width:100%;height:100%;object-fit:cover;display:block;transform:scaleX(-1)}
+.video-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--surface);transition:opacity .4s}
+.video-overlay.hidden{opacity:0;pointer-events:none}
+.cam-icon{width:72px;height:72px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+.cam-icon svg{width:36px;height:36px;stroke:var(--accent);fill:none}
+.cam-text{font-family:'Syne',sans-serif;font-size:18px;font-weight:600;margin-bottom:8px}
+.cam-sub{font-size:13px;color:var(--text-muted)}
+.face-frame{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.face-oval{width:180px;height:220px;border:2.5px solid var(--accent);border-radius:50%;box-shadow:0 0 0 2000px rgba(0,0,0,.45);animation:facePulse 3s ease-in-out infinite}
+@keyframes facePulse{0%,100%{border-color:var(--accent);box-shadow:0 0 0 2000px rgba(0,0,0,.45),0 0 30px #2e7fff44}50%{border-color:var(--success);box-shadow:0 0 0 2000px rgba(0,0,0,.45),0 0 40px #00d08444}}
+.video-status{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);background:rgba(10,12,16,.85);backdrop-filter:blur(8px);border:1px solid var(--border);border-radius:100px;padding:8px 18px;font-size:12px;color:var(--text-muted);letter-spacing:.05em;white-space:nowrap;transition:all .3s;display:none}
+.video-status.recording{color:var(--danger);border-color:#ff475744}
+.rec-dot{display:inline-block;width:7px;height:7px;background:var(--danger);border-radius:50%;margin-right:8px;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.rec-timer{font-family:'DM Serif Display',serif;font-size:22px;color:var(--danger);text-align:center;margin-bottom:16px;display:none;letter-spacing:.05em}
+.rec-progress{height:3px;background:var(--border);border-radius:100px;margin-bottom:24px;overflow:hidden;display:none}
+.rec-progress-fill{height:100%;background:var(--danger);width:0%;transition:width .1s linear;border-radius:100px}
+/* hidden file input for form submission */
+#videoFileInput{display:none}
+@media(max-width:600px){.liveness-steps{grid-template-columns:1fr}}
+</style>
+{% endblock %}
+
+{% block content %}
+{% include "kyc/_steps_bar.html" with current_step=3 %}
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title-group">
+      <span class="card-step-tag">Step 03 of 03</span>
+      <h2 class="card-title">Liveness Verification</h2>
+    </div>
+    <div class="card-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#2e7fff" stroke-width="1.5">
+        <path d="M15 10l4.553-2.277A1 1 0 0121 8.82v6.36a1 1 0 01-1.447.898L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="liveness-steps">
+      <div class="liveness-step active" id="ls1">
+        <span class="liveness-step-icon">😐</span>
+        <div class="liveness-step-text">Look straight at the camera</div>
+      </div>
+      <div class="liveness-step" id="ls2">
+        <span class="liveness-step-icon">😊</span>
+        <div class="liveness-step-text">Slowly turn head left</div>
+      </div>
+      <div class="liveness-step" id="ls3">
+        <span class="liveness-step-icon">🙂</span>
+        <div class="liveness-step-text">Slowly turn head right</div>
+      </div>
+    </div>
+
+    <div class="video-container">
+      <div class="video-overlay" id="videoOverlay">
+        <div class="cam-icon">
+          <svg viewBox="0 0 24 24"><path d="M15 10l4.553-2.277A1 1 0 0121 8.82v6.36a1 1 0 01-1.447.898L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/></svg>
+        </div>
+        <div class="cam-text">Camera not started</div>
+        <div class="cam-sub">Click "Start Camera" to begin</div>
+      </div>
+      <video id="videoEl" autoplay muted playsinline></video>
+      <div class="face-frame" id="faceFrame" style="display:none">
+        <div class="face-oval"></div>
+      </div>
+      <div class="video-status" id="videoStatus">Position your face in the oval</div>
+    </div>
+
+    <div class="rec-timer" id="recTimer">00:00</div>
+    <div class="rec-progress" id="recProgress">
+      <div class="rec-progress-fill" id="recFill"></div>
+    </div>
+
+    <div class="info-note">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <p>Make sure you are in a <strong>well-lit area</strong>. Remove glasses if possible. The recording lasts <strong>5 seconds</strong>. Follow the on-screen prompts.</p>
+    </div>
+
+    <!-- Form to POST the recorded video blob -->
+    <form method="post" enctype="multipart/form-data" id="livenessForm" novalidate>
+      {% csrf_token %}
+      <input type="file" name="{{ form.liveness_video.html_name }}" id="videoFileInput" accept="video/*">
+      {% for err in form.liveness_video.errors %}
+        <span class="field-error" style="display:block;margin-bottom:12px">{{ err }}</span>
+      {% endfor %}
+
+      <div class="divider"></div>
+      <div class="btn-row" id="videoControls">
+        <a href="{% url 'kyc:step2' %}" class="btn btn-ghost" id="backBtn">← Back</a>
+        <button type="button" class="btn btn-primary" id="startCamBtn" onclick="startCamera()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 10l4.553-2.277A1 1 0 0121 8.82v6.36a1 1 0 01-1.447.898L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/></svg>
+          Start Camera
+        </button>
+        <button type="button" class="btn" id="recordBtn" style="display:none;background:#ff475720;color:var(--danger);border:1px solid #ff475733" onclick="startRecording()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg>
+          Record Now
+        </button>
+        <button type="submit" class="btn btn-success" id="submitBtn" style="display:none">
+          Submit Verification →
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let mediaStream = null;
+let mediaRecorder = null;
+let recordedChunks = [];
+let recordingTimer = null;
+
+async function startCamera() {
+  try {
+    mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 640, height: 480 }, audio: false });
+    document.getElementById('videoEl').srcObject = mediaStream;
+    document.getElementById('videoOverlay').classList.add('hidden');
+    document.getElementById('faceFrame').style.display = 'flex';
+    document.getElementById('videoStatus').style.display = 'block';
+    document.getElementById('startCamBtn').style.display = 'none';
+    document.getElementById('recordBtn').style.display = 'flex';
+    document.getElementById('backBtn').style.display = 'none';
+  } catch (err) {
+    alert('Camera access denied. Please allow camera permissions.\n\n' + err.message);
+  }
+}
+
+function startRecording() {
+  if (!mediaStream) return;
+  recordedChunks = [];
+  const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' : 'video/webm';
+  mediaRecorder = new MediaRecorder(mediaStream, { mimeType });
+  mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
+  mediaRecorder.onstop = onRecordingComplete;
+  mediaRecorder.start(100);
+
+  document.getElementById('recordBtn').style.display = 'none';
+  document.getElementById('recTimer').style.display = 'block';
+  document.getElementById('recProgress').style.display = 'block';
+  const status = document.getElementById('videoStatus');
+  status.innerHTML = '<span class="rec-dot"></span> Recording…';
+  status.classList.add('recording');
+
+  const stepTimings = [0, 1800, 3500];
+  const steps = ['ls1','ls2','ls3'];
+  stepTimings.forEach((t, i) => {
+    setTimeout(() => {
+      steps.forEach((id, j) => {
+        document.getElementById(id).className = 'liveness-step' + (j < i ? ' done' : j === i ? ' active' : '');
+      });
+    }, t);
+  });
+
+  const duration = 5000;
+  const start = Date.now();
+  recordingTimer = setInterval(() => {
+    const elapsed = Date.now() - start;
+    const pct = Math.min(elapsed / duration * 100, 100);
+    const secs = Math.min(Math.floor(elapsed / 1000), 5);
+    document.getElementById('recFill').style.width = pct + '%';
+    document.getElementById('recTimer').textContent = '00:0' + secs;
+    if (elapsed >= duration) { clearInterval(recordingTimer); mediaRecorder.stop(); }
+  }, 50);
+}
+
+function onRecordingComplete() {
+  const blob = new Blob(recordedChunks, { type: 'video/webm' });
+  const file = new File([blob], 'liveness.webm', { type: 'video/webm' });
+  const dt = new DataTransfer();
+  dt.items.add(file);
+  document.getElementById('videoFileInput').files = dt.files;
+
+  document.getElementById('recTimer').style.display = 'none';
+  document.getElementById('recProgress').style.display = 'none';
+  const status = document.getElementById('videoStatus');
+  status.innerHTML = '✓ Liveness check complete';
+  status.classList.remove('recording');
+
+  const steps = ['ls1','ls2','ls3'];
+  steps.forEach(id => { document.getElementById(id).className = 'liveness-step done'; });
+
+  document.getElementById('submitBtn').style.display = 'flex';
+}
+</script>
+{% endblock %}

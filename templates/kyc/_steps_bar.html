@@ -1,0 +1,25 @@
+{# Include as: {% include "kyc/_steps_bar.html" with current_step=N %} #}
+<div class="steps-bar">
+  <div class="step-item {% if current_step == 1 %}active{% elif current_step > 1 %}done{% endif %}">
+    <div class="step-num">{% if current_step > 1 %}✓{% else %}01{% endif %}</div>
+    <div class="step-label">Personal Info</div>
+  </div>
+  <div class="step-line {% if current_step > 1 %}done{% endif %}"></div>
+
+  <div class="step-item {% if current_step == 2 %}active{% elif current_step > 2 %}done{% endif %}">
+    <div class="step-num">{% if current_step > 2 %}✓{% else %}02{% endif %}</div>
+    <div class="step-label">ID Document</div>
+  </div>
+  <div class="step-line {% if current_step > 2 %}done{% endif %}"></div>
+
+  <div class="step-item {% if current_step == 3 %}active{% elif current_step > 3 %}done{% endif %}">
+    <div class="step-num">{% if current_step > 3 %}✓{% else %}03{% endif %}</div>
+    <div class="step-label">Live Check</div>
+  </div>
+  <div class="step-line {% if current_step > 3 %}done{% endif %}"></div>
+
+  <div class="step-item {% if current_step == 4 %}active{% endif %}">
+    <div class="step-num">✓</div>
+    <div class="step-label">Verified</div>
+  </div>
+</div>

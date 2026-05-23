@@ -1,0 +1,157 @@
+{% extends "kyc/base.html" %}
+{% block title %}KYC — ID Document{% endblock %}
+
+{% block extra_css %}
+<style>
+.upload-zone{border:1.5px dashed var(--border);border-radius:14px;padding:40px 20px;text-align:center;cursor:pointer;transition:all .25s;background:var(--surface2);position:relative;overflow:hidden}
+.upload-zone:hover{border-color:var(--accent);background:var(--accent-glow)}
+.upload-zone.has-file{border-style:solid;border-color:var(--success);background:#00d08410}
+.upload-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-icon{width:48px;height:48px;background:var(--surface);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+.upload-icon svg{width:24px;height:24px;stroke:var(--accent);fill:none}
+.upload-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:600;margin-bottom:4px}
+.upload-sub{font-size:12px;color:var(--text-muted)}
+.upload-formats{display:flex;justify-content:center;gap:6px;margin-top:12px;flex-wrap:wrap}
+.format-tag{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);border:1px solid var(--border);padding:3px 10px;border-radius:100px}
+.file-chosen{font-size:12px;color:var(--success);margin-top:10px;display:none}
+.id-sides{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.side-label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px}
+@media(max-width:600px){.id-sides{grid-template-columns:1fr}}
+</style>
+{% endblock %}
+
+{% block content %}
+{% include "kyc/_steps_bar.html" with current_step=2 %}
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title-group">
+      <span class="card-step-tag">Step 02 of 03</span>
+      <h2 class="card-title">ID Document</h2>
+    </div>
+    <div class="card-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#2e7fff" stroke-width="1.5">
+        <rect x="2" y="5" width="20" height="14" rx="2"/>
+        <path d="M2 10h20"/><circle cx="7" cy="15" r="1"/>
+        <path d="M11 15h6"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <form method="post" enctype="multipart/form-data" novalidate>
+      {% csrf_token %}
+
+      <div class="field-row">
+        <div class="field">
+          <label for="{{ form.id_type.id_for_label }}">ID Type</label>
+          <select name="{{ form.id_type.html_name }}" id="{{ form.id_type.id_for_label }}"
+                  {% if form.id_type.errors %}class="is-invalid"{% endif %}>
+            {% for val, label in form.fields.id_type.widget.choices %}
+              <option value="{{ val }}" {% if form.id_type.value == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+          {% for err in form.id_type.errors %}<span class="field-error">{{ err }}</span>{% endfor %}
+        </div>
+      </div>
+
+      <div class="field-row two-col">
+        <div class="field">
+          <label for="{{ form.id_number.id_for_label }}">Document Number</label>
+          <input type="text"
+                 name="{{ form.id_number.html_name }}"
+                 id="{{ form.id_number.id_for_label }}"
+                 value="{{ form.id_number.value|default:'' }}"
+                 placeholder="e.g. P12345678"
+                 {% if form.id_number.errors %}class="is-invalid"{% endif %}>
+          {% for err in form.id_number.errors %}<span class="field-error">{{ err }}</span>{% endfor %}
+        </div>
+        <div class="field">
+          <label for="{{ form.id_expiry.id_for_label }}">Expiry Date</label>
+          <input type="date"
+                 name="{{ form.id_expiry.html_name }}"
+                 id="{{ form.id_expiry.id_for_label }}"
+                 value="{{ form.id_expiry.value|default:'' }}"
+                 {% if form.id_expiry.errors %}class="is-invalid"{% endif %}>
+          {% for err in form.id_expiry.errors %}<span class="field-error">{{ err }}</span>{% endfor %}
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="id-sides">
+        <!-- Front -->
+        <div>
+          <div class="side-label">Front Side</div>
+          <div class="upload-zone" id="frontZone">
+            <input type="file" name="{{ form.id_front.html_name }}" id="{{ form.id_front.id_for_label }}"
+                   accept="image/jpeg,image/png,image/webp,application/pdf"
+                   onchange="showChosen(this,'frontChosen')">
+            <div class="upload-icon">
+              <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg>
+            </div>
+            <div class="upload-title">Front of ID</div>
+            <div class="upload-sub">Click or drag to upload</div>
+            <div class="upload-formats">
+              <span class="format-tag">JPG</span>
+              <span class="format-tag">PNG</span>
+              <span class="format-tag">PDF</span>
+            </div>
+            <div class="file-chosen" id="frontChosen"></div>
+          </div>
+          {% for err in form.id_front.errors %}<span class="field-error" style="display:block;margin-top:6px">{{ err }}</span>{% endfor %}
+        </div>
+
+        <!-- Back -->
+        <div>
+          <div class="side-label">Back Side <span style="color:var(--text-dim);font-size:10px;">(if applicable)</span></div>
+          <div class="upload-zone" id="backZone">
+            <input type="file" name="{{ form.id_back.html_name }}" id="{{ form.id_back.id_for_label }}"
+                   accept="image/jpeg,image/png,image/webp,application/pdf"
+                   onchange="showChosen(this,'backChosen')">
+            <div class="upload-icon">
+              <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg>
+            </div>
+            <div class="upload-title">Back of ID</div>
+            <div class="upload-sub">Click or drag to upload</div>
+            <div class="upload-formats">
+              <span class="format-tag">JPG</span>
+              <span class="format-tag">PNG</span>
+              <span class="format-tag">PDF</span>
+            </div>
+            <div class="file-chosen" id="backChosen"></div>
+          </div>
+          {% for err in form.id_back.errors %}<span class="field-error" style="display:block;margin-top:6px">{{ err }}</span>{% endfor %}
+        </div>
+      </div>
+
+      <div class="info-note">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <p>Ensure the document is <strong>fully visible, well-lit, and not blurry</strong>. All four corners must be visible. Max 10 MB per image.</p>
+      </div>
+
+      <div class="divider"></div>
+      <div class="btn-row">
+        <a href="{% url 'kyc:step1' %}" class="btn btn-ghost">← Back</a>
+        <button type="submit" class="btn btn-primary">
+          Continue to Liveness
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function showChosen(input, labelId) {
+  const label = document.getElementById(labelId);
+  if (input.files && input.files[0]) {
+    label.textContent = '✓ ' + input.files[0].name;
+    label.style.display = 'block';
+    input.closest('.upload-zone').classList.add('has-file');
+  }
+}
+</script>
+{% endblock %}
