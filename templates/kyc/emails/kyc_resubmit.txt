@@ -1,0 +1,28 @@
+VerifyID — Action Required: Resubmit Your KYC
+=============================================
+
+Hi {{ submission.first_name }},
+
+Our review team has been unable to complete your KYC verification with the
+documents currently on file. We kindly ask you to resubmit your application.
+{% if submission.reviewer_notes %}
+What to fix:
+  {{ submission.reviewer_notes }}
+{% endif %}
+Tips for a successful resubmission:
+  - Ensure the document image is well-lit and all corners are visible
+  - Use a flat surface — avoid glare or shadows on the document
+  - Check that the document has not expired
+  - Name entered must match the document exactly
+  - For the liveness check, ensure good lighting and follow face prompts
+
+Your Reference: {{ submission.reference_id }}
+
+If you need help, contact us at {{ support_email }}.
+
+Best regards,
+The VerifyID Team
+
+---
+This is an automated message. Please do not reply to this email.
+Reference: {{ submission.reference_id }}

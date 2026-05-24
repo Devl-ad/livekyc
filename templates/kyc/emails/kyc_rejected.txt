@@ -1,0 +1,34 @@
+VerifyID — Identity Verification Unsuccessful
+=============================================
+
+Hi {{ submission.first_name }},
+
+Unfortunately, we were unable to complete your identity verification.
+
+Common reasons for rejection:
+  - ID document image was blurry, cut off, or obscured
+  - Name on document does not match the name provided
+  - ID document has expired
+  - Liveness check did not meet requirements
+  - Document could not be authenticated
+{% if submission.reviewer_notes %}
+Reviewer Note:
+  {{ submission.reviewer_notes }}
+{% endif %}
+Submission Reference
+--------------------
+Reference ID : {{ submission.reference_id }}
+Status       : REJECTED
+
+You are welcome to start a new verification. Please ensure your documents
+are clear, valid, and all details match exactly.
+
+If you believe this decision was made in error, please contact us at:
+{{ support_email }}
+
+Best regards,
+The VerifyID Team
+
+---
+This is an automated message. Please do not reply to this email.
+Reference: {{ submission.reference_id }}

@@ -16,7 +16,7 @@ from .models import KYCSubmission
 
 logger = logging.getLogger(__name__)
 
-# Temp upload prefix used while the session is in progress
+
 TEMP_PREFIX = "kyc/temp"
 
 

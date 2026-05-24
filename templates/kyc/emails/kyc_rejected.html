@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KYC Rejected</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f6f9;font-family:'Helvetica Neue',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f9;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="580" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08);">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:#0a0c10;padding:28px 40px;text-align:center;">
+              <span style="font-size:22px;font-weight:800;color:#ffffff;letter-spacing:-.02em;">
+                Verify<span style="color:#2e7fff;">ID</span>
+              </span>
+            </td>
+          </tr>
+
+          <!-- Red banner -->
+          <tr>
+            <td style="background:#ff4757;padding:28px 40px;text-align:center;">
+              <div style="font-size:36px;margin-bottom:12px;line-height:1;">✕</div>
+              <h1 style="margin:0;font-size:24px;font-weight:700;color:#fff;letter-spacing:-.01em;">
+                Verification Unsuccessful
+              </h1>
+              <p style="margin:8px 0 0;font-size:14px;color:rgba(255,255,255,.8);">
+                We were unable to verify your identity at this time.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:36px 40px;">
+              <p style="margin:0 0 20px;font-size:15px;color:#1a1d24;line-height:1.6;">
+                Hi <strong>{{ submission.first_name }}</strong>,
+              </p>
+              <p style="margin:0 0 20px;font-size:15px;color:#444;line-height:1.6;">
+                Unfortunately, we were unable to complete your identity verification. This may be due to one of the following reasons:
+              </p>
+
+              <!-- Reason list -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background:#fff5f5;border-radius:8px;border:1px solid #ffd0d5;margin:0 0 24px;">
+                <tr>
+                  <td style="padding:20px 24px;">
+                    <p style="margin:0 0 12px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#888;">Common Reasons for Rejection</p>
+                    <ul style="margin:0;padding-left:18px;font-size:13px;color:#555;line-height:1.9;">
+                      <li>ID document image was blurry, cut off, or obscured</li>
+                      <li>Name on document does not match the name provided</li>
+                      <li>ID document has expired</li>
+                      <li>Liveness check did not meet requirements</li>
+                      <li>Document could not be authenticated</li>
+                    </ul>
+                  </td>
+                </tr>
+              </table>
+
+              {% if submission.reviewer_notes %}
+              <!-- Reviewer note -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8f9fc;border-radius:8px;border-left:4px solid #ff4757;margin:0 0 24px;">
+                <tr>
+                  <td style="padding:16px 20px;">
+                    <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#888;">Reviewer Note</p>
+                    <p style="margin:0;font-size:14px;color:#333;line-height:1.6;">{{ submission.reviewer_notes }}</p>
+                  </td>
+                </tr>
+              </table>
+              {% endif %}
+
+              <!-- Detail box -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8f9fc;border-radius:8px;border:1px solid #e8eaef;margin:0 0 28px;">
+                <tr>
+                  <td style="padding:20px 24px;">
+                    <p style="margin:0 0 12px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#888;">Submission Reference</p>
+                    <table width="100%" cellpadding="4" cellspacing="0">
+                      <tr>
+                        <td style="font-size:13px;color:#888;width:140px;">Reference ID</td>
+                        <td style="font-size:13px;color:#1a1d24;font-weight:600;">{{ submission.reference_id }}</td>
+                      </tr>
+                      <tr>
+                        <td style="font-size:13px;color:#888;">Status</td>
+                        <td style="font-size:13px;color:#ff4757;font-weight:700;">Rejected</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:0 0 20px;font-size:14px;color:#444;line-height:1.6;">
+                You are welcome to start a new verification. Please ensure your documents are clear, valid, and that all details match exactly.
+              </p>
+
+              <p style="margin:0 0 28px;font-size:14px;color:#666;line-height:1.6;">
+                If you believe this decision was made in error or need further assistance, please contact our support team at
+                <a href="mailto:{{ support_email }}" style="color:#2e7fff;text-decoration:none;">{{ support_email }}</a>.
+              </p>
+
+              <p style="margin:0;font-size:14px;color:#888;">
+                Best regards,<br>
+                <strong style="color:#1a1d24;">The VerifyID Team</strong>
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background:#f8f9fc;border-top:1px solid #e8eaef;padding:20px 40px;text-align:center;">
+              <p style="margin:0;font-size:11px;color:#aaa;line-height:1.6;">
+                This is an automated message from VerifyID. Please do not reply to this email.<br>
+                Reference: {{ submission.reference_id }}
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

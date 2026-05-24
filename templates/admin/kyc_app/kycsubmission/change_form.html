@@ -1,0 +1,54 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+
+{% block content_title %}
+<h1 style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+  {{ title }}
+  {% if original %}
+    {% with s=original.status %}
+      {% if s == "pending" %}
+        <span style="background:#ffb02022;color:#ffb020;border:1px solid #ffb02055;padding:3px 12px;border-radius:100px;font-size:12px;font-weight:700;letter-spacing:.06em;">Pending Review</span>
+      {% elif s == "approved" %}
+        <span style="background:#00d08422;color:#00d084;border:1px solid #00d08455;padding:3px 12px;border-radius:100px;font-size:12px;font-weight:700;letter-spacing:.06em;">Approved</span>
+      {% elif s == "rejected" %}
+        <span style="background:#ff475722;color:#ff4757;border:1px solid #ff475755;padding:3px 12px;border-radius:100px;font-size:12px;font-weight:700;letter-spacing:.06em;">Rejected</span>
+      {% elif s == "resubmit" %}
+        <span style="background:#2e7fff22;color:#2e7fff;border:1px solid #2e7fff55;padding:3px 12px;border-radius:100px;font-size:12px;font-weight:700;letter-spacing:.06em;">Requires Resubmission</span>
+      {% endif %}
+    {% endwith %}
+  {% endif %}
+</h1>
+{% endblock %}
+
+{% block object-tools-items %}
+  {{ block.super }}
+  {% if original %}
+  <li>
+    <a href="{{ resubmit_url }}"
+       style="background:#2e7fff;color:#fff;padding:8px 18px;border-radius:6px;
+              font-weight:600;font-size:13px;text-decoration:none;display:inline-flex;
+              align-items:center;gap:6px;"
+       onclick="return confirm('Request resubmission from {{ original.full_name }}? They will receive an email.')">
+      ↺ Request Resubmission
+    </a>
+  </li>
+  <li>
+    <a href="{{ reject_url }}"
+       style="background:#ff4757;color:#fff;padding:8px 18px;border-radius:6px;
+              font-weight:600;font-size:13px;text-decoration:none;display:inline-flex;
+              align-items:center;gap:6px;"
+       onclick="return confirm('Reject KYC for {{ original.full_name }}? They will receive a rejection email.')">
+      ✕ Reject
+    </a>
+  </li>
+  <li>
+    <a href="{{ approve_url }}"
+       style="background:#00d084;color:#001a0e;padding:8px 18px;border-radius:6px;
+              font-weight:600;font-size:13px;text-decoration:none;display:inline-flex;
+              align-items:center;gap:6px;"
+       onclick="return confirm('Approve KYC for {{ original.full_name }}? They will receive an approval email.')">
+      ✓ Approve
+    </a>
+  </li>
+  {% endif %}
+{% endblock %}

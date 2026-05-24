@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KYC Approved</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f6f9;font-family:'Helvetica Neue',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f9;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="580" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08);">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:#0a0c10;padding:28px 40px;text-align:center;">
+              <span style="font-size:22px;font-weight:800;color:#ffffff;letter-spacing:-.02em;">
+                Verify<span style="color:#2e7fff;">ID</span>
+              </span>
+            </td>
+          </tr>
+
+          <!-- Green success banner -->
+          <tr>
+            <td style="background:#00d084;padding:28px 40px;text-align:center;">
+              <div style="width:56px;height:56px;background:rgba(255,255,255,.25);border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:28px;line-height:56px;">
+                ✓
+              </div>
+              <h1 style="margin:0;font-size:24px;font-weight:700;color:#001a0e;letter-spacing:-.01em;">
+                Identity Verified Successfully
+              </h1>
+              <p style="margin:8px 0 0;font-size:14px;color:#003a1e;opacity:.8;">
+                Your KYC verification has been approved.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:36px 40px;">
+              <p style="margin:0 0 20px;font-size:15px;color:#1a1d24;line-height:1.6;">
+                Hi <strong>{{ submission.first_name }}</strong>,
+              </p>
+              <p style="margin:0 0 20px;font-size:15px;color:#444;line-height:1.6;">
+                Great news — we have successfully verified your identity. Your account is now fully activated and you have access to all platform features.
+              </p>
+
+              <!-- Detail box -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8f9fc;border-radius:8px;border:1px solid #e8eaef;margin:0 0 28px;">
+                <tr>
+                  <td style="padding:20px 24px;">
+                    <p style="margin:0 0 12px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#888;">Verification Details</p>
+                    <table width="100%" cellpadding="4" cellspacing="0">
+                      <tr>
+                        <td style="font-size:13px;color:#888;width:140px;">Reference ID</td>
+                        <td style="font-size:13px;color:#1a1d24;font-weight:600;">{{ submission.reference_id }}</td>
+                      </tr>
+                      <tr>
+                        <td style="font-size:13px;color:#888;">Full Name</td>
+                        <td style="font-size:13px;color:#1a1d24;">{{ submission.full_name }}</td>
+                      </tr>
+                      <tr>
+                        <td style="font-size:13px;color:#888;">Document Type</td>
+                        <td style="font-size:13px;color:#1a1d24;">{{ submission.get_id_type_display }}</td>
+                      </tr>
+                      <tr>
+                        <td style="font-size:13px;color:#888;">Status</td>
+                        <td style="font-size:13px;color:#00d084;font-weight:700;">Approved ✓</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:0 0 28px;font-size:14px;color:#666;line-height:1.6;">
+                If you have any questions, please contact us at
+                <a href="mailto:{{ support_email }}" style="color:#2e7fff;text-decoration:none;">{{ support_email }}</a>.
+              </p>
+
+              <p style="margin:0;font-size:14px;color:#888;">
+                Best regards,<br>
+                <strong style="color:#1a1d24;">The VerifyID Team</strong>
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background:#f8f9fc;border-top:1px solid #e8eaef;padding:20px 40px;text-align:center;">
+              <p style="margin:0;font-size:11px;color:#aaa;line-height:1.6;">
+                This is an automated message from VerifyID. Please do not reply to this email.<br>
+                Reference: {{ submission.reference_id }}
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

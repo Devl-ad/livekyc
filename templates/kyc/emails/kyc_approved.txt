@@ -1,0 +1,23 @@
+VerifyID — Identity Verification Approved
+==========================================
+
+Hi {{ submission.first_name }},
+
+Great news — your identity has been successfully verified. Your account
+is now fully activated and you have access to all platform features.
+
+Verification Details
+--------------------
+Reference ID  : {{ submission.reference_id }}
+Full Name     : {{ submission.full_name }}
+Document Type : {{ submission.get_id_type_display }}
+Status        : APPROVED
+
+If you have any questions, please contact us at {{ support_email }}.
+
+Best regards,
+The VerifyID Team
+
+---
+This is an automated message. Please do not reply to this email.
+Reference: {{ submission.reference_id }}

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KYC Resubmission Required</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f6f9;font-family:'Helvetica Neue',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f9;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="580" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08);">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:#0a0c10;padding:28px 40px;text-align:center;">
+              <span style="font-size:22px;font-weight:800;color:#ffffff;letter-spacing:-.02em;">
+                Verify<span style="color:#2e7fff;">ID</span>
+              </span>
+            </td>
+          </tr>
+
+          <!-- Blue banner -->
+          <tr>
+            <td style="background:#2e7fff;padding:28px 40px;text-align:center;">
+              <div style="font-size:36px;margin-bottom:12px;line-height:1;">↺</div>
+              <h1 style="margin:0;font-size:24px;font-weight:700;color:#fff;letter-spacing:-.01em;">
+                Action Required: Resubmit Your KYC
+              </h1>
+              <p style="margin:8px 0 0;font-size:14px;color:rgba(255,255,255,.8);">
+                We need additional information to complete your verification.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:36px 40px;">
+              <p style="margin:0 0 20px;font-size:15px;color:#1a1d24;line-height:1.6;">
+                Hi <strong>{{ submission.first_name }}</strong>,
+              </p>
+              <p style="margin:0 0 20px;font-size:15px;color:#444;line-height:1.6;">
+                Our review team has been unable to complete your KYC verification with the documents currently on file. We kindly ask you to resubmit your application with the corrections noted below.
+              </p>
+
+              {% if submission.reviewer_notes %}
+              <!-- What to fix -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background:#eff6ff;border-radius:8px;border-left:4px solid #2e7fff;margin:0 0 24px;">
+                <tr>
+                  <td style="padding:16px 20px;">
+                    <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#2e7fff;">What to Fix</p>
+                    <p style="margin:0;font-size:14px;color:#333;line-height:1.7;">{{ submission.reviewer_notes }}</p>
+                  </td>
+                </tr>
+              </table>
+              {% endif %}
+
+              <!-- Tips -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8f9fc;border-radius:8px;border:1px solid #e8eaef;margin:0 0 28px;">
+                <tr>
+                  <td style="padding:20px 24px;">
+                    <p style="margin:0 0 12px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#888;">Tips for a Successful Resubmission</p>
+                    <ul style="margin:0;padding-left:18px;font-size:13px;color:#555;line-height:1.9;">
+                      <li>Ensure the document image is well-lit and all corners are visible</li>
+                      <li>Use a flat surface — avoid glare or shadows on the document</li>
+                      <li>Check that the document has not expired</li>
+                      <li>Name entered must match the document exactly</li>
+                      <li>For the liveness check, ensure good lighting and follow face prompts</li>
+                    </ul>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Reference -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8f9fc;border-radius:8px;border:1px solid #e8eaef;margin:0 0 28px;">
+                <tr>
+                  <td style="padding:16px 24px;">
+                    <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#888;">Your Reference</p>
+                    <code style="font-size:15px;color:#1a1d24;font-weight:600;letter-spacing:.05em;">{{ submission.reference_id }}</code>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:0 0 28px;font-size:14px;color:#666;line-height:1.6;">
+                If you have questions or need help, contact us at
+                <a href="mailto:{{ support_email }}" style="color:#2e7fff;text-decoration:none;">{{ support_email }}</a>.
+              </p>
+
+              <p style="margin:0;font-size:14px;color:#888;">
+                Best regards,<br>
+                <strong style="color:#1a1d24;">The VerifyID Team</strong>
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background:#f8f9fc;border-top:1px solid #e8eaef;padding:20px 40px;text-align:center;">
+              <p style="margin:0;font-size:11px;color:#aaa;line-height:1.6;">
+                This is an automated message from VerifyID. Please do not reply to this email.<br>
+                Reference: {{ submission.reference_id }}
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
